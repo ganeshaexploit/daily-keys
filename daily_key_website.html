@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Key Generator - Script Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .date-display {
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .date-display h2 {
+            color: white;
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .date-display .date {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .key-container {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .key-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .key-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .key-display {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            word-break: break-all;
+            position: relative;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info-box ul {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+
+        .info-box ul li {
+            margin-bottom: 5px;
+        }
+
+        .timer-box {
+            background: linear-gradient(135deg, #fc5c7d, #6a82fb);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .timer-box h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .timer {
+            font-size: 36px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .steps {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #555;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        .success-msg {
+            display: none;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .expired-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .expired-message {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .expired-message h2 {
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕐 Daily Key Generator</h1>
+        <p class="subtitle">Key otomatis berubah setiap 24 jam</p>
+
+        <div class="date-display">
+            <h2>📅 Tanggal Hari Ini</h2>
+            <div class="date" id="currentDate">Loading...</div>
+        </div>
+
+        <div class="timer-box">
+            <h3>⏰ Key Expired Dalam:</h3>
+            <div class="timer" id="countdown">Loading...</div>
+        </div>
+
+        <div class="key-container">
+            <div class="key-label">🔑 Key Hari Ini</div>
+            <div class="key-display" id="keyDisplay">Generating...</div>
+            <button class="copy-btn" onclick="copyKey()">📋 Copy Key</button>
+            <div class="success-msg" id="successMsg">✅ Key berhasil di-copy!</div>
+        </div>
+
+        <div class="info-box">
+            <h3>⚠️ Penting!</h3>
+            <ul>
+                <li>Key ini hanya valid untuk <strong>hari ini</strong></li>
+                <li>Key akan <strong>expired dalam 24 jam</strong></li>
+                <li>Kembali ke website ini besok untuk key baru</li>
+                <li>Jangan share key dengan orang lain</li>
+            </ul>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div>Copy key di atas</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div>Buka Roblox dan jalankan script</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div>Paste key yang sudah di-copy</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div>Klik "Verify Key" dan enjoy! 🎉</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Key akan reset otomatis jam 00:00 WIB</p>
+            <p style="margin-top: 10px;">Script Hub © 2024</p>
+        </div>
+    </div>
+
+    <div class="expired-overlay" id="expiredOverlay">
+        <div class="expired-message">
+            <h2>⏰ Key Expired!</h2>
+            <p>Key hari ini sudah expired.<br>Refresh halaman untuk mendapatkan key baru.</p>
+            <button class="refresh-btn" onclick="location.reload()">🔄 Refresh Page</button>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk generate daily key
+        function generateDailyKey() {
+            const date = new Date();
+            
+            // Format: KEY-YYYYMMDD-XXXX
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const dateString = `${year}${month}${day}`;
+            
+            // Generate random 4 karakter
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let random = '';
+            for (let i = 0; i < 4; i++) {
+                random += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            return `KEY-${dateString}-${random}`;
+        }
+
+        // Fungsi untuk display tanggal
+        function displayCurrentDate() {
+            const date = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const dateString = date.toLocaleDateString('id-ID', options);
+            document.getElementById('currentDate').textContent = dateString;
+        }
+
+        // Fungsi countdown
+        function updateCountdown() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            
+            const diff = tomorrow - now;
+            
+            if (diff <= 0) {
+                // Key expired, reload page
+                document.getElementById('expiredOverlay').style.display = 'flex';
+                return;
+            }
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('countdown').textContent = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // Fungsi copy key
+        function copyKey() {
+            const keyText = document.getElementById('keyDisplay').textContent;
+            
+            navigator.clipboard.writeText(keyText).then(function() {
+                const successMsg = document.getElementById('successMsg');
+                successMsg.style.display = 'block';
+                
+                setTimeout(function() {
+                    successMsg.style.display = 'none';
+                }, 3000);
+            }).catch(function(err) {
+                alert('Gagal copy: ' + err);
+            });
+        }
+
+        // Generate key saat page load
+        window.onload = function() {
+            const key = generateDailyKey();
+            document.getElementById('keyDisplay').textContent = key;
+            displayCurrentDate();
+            updateCountdown();
+            
+            // Update countdown setiap detik
+            setInterval(updateCountdown, 1000);
+            
+            // Auto-generate key baru setiap midnight
+            setInterval(function() {
+                const now = new Date();
+                if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+                    location.reload();
+                }
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
